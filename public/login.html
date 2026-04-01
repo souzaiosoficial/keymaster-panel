@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<title>KeyMaster — Login</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'IBM Plex Sans',sans-serif;background:#0c0c0c;color:#f0ede8;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(232,82,10,.1) 0%,transparent 65%);pointer-events:none}
+.card{width:100%;max-width:380px;background:#141414;border:1px solid #2a2a2a;border-radius:20px;padding:36px 28px 32px;box-shadow:0 24px 80px rgba(0,0,0,.6)}
+.logo{display:flex;align-items:center;justify-content:center;gap:11px;margin-bottom:28px}
+.logo svg{width:40px;height:40px}
+.logo-text{font-family:'IBM Plex Mono',monospace;font-size:20px;font-weight:700}
+.logo-text span{color:#ff6b2b}
+.label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#4a4540;margin-bottom:7px;display:block;font-family:'IBM Plex Mono',monospace}
+.inp{width:100%;background:#0c0c0c;border:1px solid #2a2a2a;border-radius:10px;padding:13px 14px;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#f0ede8;outline:none;transition:border-color .15s;margin-bottom:14px;-webkit-appearance:none;appearance:none}
+.inp:focus{border-color:#e8520a;box-shadow:0 0 0 3px rgba(232,82,10,.1)}
+.btn{width:100%;padding:14px;background:#e8520a;border:none;border-radius:10px;color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:background .15s;margin-top:6px;letter-spacing:.2px}
+.btn:hover{background:#ff6b2b}
+.btn:active{transform:scale(.98)}
+.btn.loading{opacity:.5;pointer-events:none}
+.err{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:#f87171;border-radius:9px;padding:11px 14px;font-size:12px;margin-top:12px;display:none;font-family:'IBM Plex Mono',monospace}
+.ver{text-align:center;font-family:'IBM Plex Mono',monospace;font-size:9px;color:#2a2a2a;margin-top:22px;letter-spacing:1.5px}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">
+    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="50" cy="50" r="22" fill="#e8520a"/>
+      <g stroke="#e8520a" stroke-linecap="round">
+        <line x1="50" y1="5"  x2="50" y2="22" stroke-width="7"/>
+        <line x1="50" y1="78" x2="50" y2="95" stroke-width="7"/>
+        <line x1="5"  y1="50" x2="22" y2="50" stroke-width="7"/>
+        <line x1="78" y1="50" x2="95" y2="50" stroke-width="7"/>
+        <line x1="18" y1="18" x2="30" y2="30" stroke-width="6"/>
+        <line x1="70" y1="70" x2="82" y2="82" stroke-width="6"/>
+        <line x1="82" y1="18" x2="70" y2="30" stroke-width="6"/>
+        <line x1="30" y1="70" x2="18" y2="82" stroke-width="6"/>
+        <line x1="10" y1="32" x2="25" y2="39" stroke-width="5"/>
+        <line x1="75" y1="61" x2="90" y2="68" stroke-width="5"/>
+        <line x1="32" y1="10" x2="39" y2="25" stroke-width="5"/>
+        <line x1="61" y1="75" x2="68" y2="90" stroke-width="5"/>
+        <line x1="90" y1="32" x2="75" y2="39" stroke-width="5"/>
+        <line x1="25" y1="61" x2="10" y2="68" stroke-width="5"/>
+        <line x1="68" y1="10" x2="61" y2="25" stroke-width="5"/>
+        <line x1="39" y1="75" x2="32" y2="90" stroke-width="5"/>
+      </g>
+    </svg>
+    <div class="logo-text">Key<span>Master</span></div>
+  </div>
+  <label class="label">Usuário</label>
+  <input class="inp" type="text" id="u" placeholder="admin" autocomplete="username"/>
+  <label class="label">Senha</label>
+  <input class="inp" type="password" id="p" placeholder="••••••••" autocomplete="current-password"/>
+  <button class="btn" id="btn" onclick="login()">Entrar</button>
+  <div class="err" id="err"></div>
+  <div class="ver">KEYMASTER v2.0 // ADMIN PANEL</div>
+</div>
+<script>
+document.addEventListener('keydown',e=>{if(e.key==='Enter')login()});
+async function login(){
+  const btn=document.getElementById('btn'),err=document.getElementById('err');
+  btn.classList.add('loading');btn.textContent='Verificando...';err.style.display='none';
+  try{
+    const r=await fetch('/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:document.getElementById('u').value,password:document.getElementById('p').value})});
+    const d=await r.json();
+    if(d.ok){location.href='/'}
+    else{err.textContent=d.message;err.style.display='block'}
+  }catch{err.textContent='Erro de conexão.';err.style.display='block'}
+  btn.classList.remove('loading');btn.textContent='Entrar';
+}
+</script>
+</body>
+</html>
