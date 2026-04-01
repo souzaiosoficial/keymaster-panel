@@ -1,0 +1,36 @@
+name: Build KeyMaster Dylib
+
+on:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build with clang directly
+        run: |
+          SDK=$(xcrun --sdk iphoneos --show-sdk-path)
+          echo "SDK: $SDK"
+          clang \
+            -arch arm64 \
+            -isysroot $SDK \
+            -miphoneos-version-min=14.0 \
+            -fobjc-arc \
+            -shared \
+            -fmodules \
+            -framework UIKit \
+            -framework Foundation \
+            -x objective-c \
+            -o KeyMaster.dylib \
+            Tweak.xm
+          ls -lh KeyMaster.dylib
+
+      - name: Upload dylib
+        uses: actions/upload-artifact@v4
+        with:
+          name: KeyMaster-dylib
+          path: KeyMaster.dylib
+          if-no-files-found: error
