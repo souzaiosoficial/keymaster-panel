@@ -31,7 +31,7 @@ app.use(session({
   secret: SECRET,
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 }
+ cookie: { secure: false, maxAge: 30 * 24 * 60 * 60 * 1000 }
 }));
 app.use(express.static(__dirname + '/public'));
 
